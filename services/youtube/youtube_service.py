@@ -3,6 +3,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import re
 import requests
 
+from services.proxy.proxy_service import get_proxy
 from services.youtube.models.youtube_transcript import YouTubeTranscriptLine
 from services.youtube.models.youtube_video_details import YouTubeVideoDetails
 
@@ -27,7 +28,8 @@ def get_video_details_from_url(url: str) -> YouTubeVideoDetails:
 def get_youtube_transcript_from_youtube_video_id(video_id: str) -> list[YouTubeTranscriptLine]:
   transcript = YouTubeTranscriptApi.get_transcript(
     video_id=video_id,
-    languages=['en', 'en-US']
+    languages=['en', 'en-US'],
+    proxies={"http": f"http://{get_proxy()}"}
   )
 
   transcript = [YouTubeTranscriptLine(line['text'], line['start']) for line in transcript]
