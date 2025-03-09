@@ -31,22 +31,25 @@ def youtube_video_input():
       try:
         progress_bar.progress(5, text=f'fetching video detail from video url: {video_url}')
         video_details = get_video_details_from_url(video_url)
-      except:
+      except Exception as e:
         progress_bar.progress(7, text=f'❌ Failed to video details from video url: {video_url}')
+        print(f'Error occurred: {e}')
         return
 
       try:
         progress_bar.progress(10, text=f'fetching transcript from video id: {video_id}')
         transcript = get_youtube_transcript_from_youtube_video_id(video_id)
-      except:
+      except Exception as e:
         progress_bar.progress(12, text=f'❌ Failed to fetch English transcript for video id: {video_id}')
+        print(f'Error occurred: {e}')
         return
 
       progress_bar.progress(20, text=f'Ingesting transcript into vector database for video: {video_details.title}')
       try:
         ingest_video_transcript(transcript, video_id, video_details)
-      except:
+      except Exception as e:
         progress_bar.progress(22, text=f'❌ Failed to ingest transcript into vector database for video: {video_details.title}')
+        print(f'Error occurred: {e}')
         return
 
       progress_bar.progress(100, text=f'✅ Transcript ingestion completed for video: {video_details.title}')

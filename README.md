@@ -10,6 +10,11 @@ https://iamfranco-youtube-rag.streamlit.app/
 
 ### To run locally
 
+Go to [Supdata YouTube transcript API](https://supadata.ai/youtube-transcript-api) to get a free API key, and store the API key into a `.env` file at the base of the project
+```
+SUPADATA_API_KEY=
+```
+
 Create a virtual environment `.venv`
 ```
 python -m venv .venv

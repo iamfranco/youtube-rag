@@ -1,10 +1,9 @@
-from youtube_transcript_api import YouTubeTranscriptApi
-
 import re
 import requests
 
-from services.proxy.proxy_service import get_proxy
 from services.youtube.models.youtube_transcript import YouTubeTranscriptLine
+import services.youtube.transcript_source.youtube_transcript_api_python as YouTubeTranscriptPython
+import services.youtube.transcript_source.youtube_transcript_api_supadata as YouTubeTranscriptSupadata
 from services.youtube.models.youtube_video_details import YouTubeVideoDetails
 
 def get_video_id_from_url(url: str) -> str:
@@ -26,13 +25,11 @@ def get_video_details_from_url(url: str) -> YouTubeVideoDetails:
   return YouTubeVideoDetails(title, author) 
 
 def get_youtube_transcript_from_youtube_video_id(video_id: str) -> list[YouTubeTranscriptLine]:
-  transcript = YouTubeTranscriptApi.get_transcript(
-    video_id=video_id,
-    languages=['en', 'en-US'],
-    proxies={"http": f"http://{get_proxy()}"}
-  )
+  try:
+    transcript = YouTubeTranscriptPython.get_youtube_transcript(video_id)
+  except:
+    transcript = YouTubeTranscriptSupadata.get_youtube_transcript(video_id)
 
-  transcript = [YouTubeTranscriptLine(line['text'], line['start']) for line in transcript]
   transcript = remove_music(transcript)
   transcript = join_youtube_transcripts(transcript)
 
